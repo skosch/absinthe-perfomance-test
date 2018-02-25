@@ -12,12 +12,8 @@ defmodule App.Schema do
 
   query do
     field :scores, list_of(:score) do
-      resolve fn _, _ ->
-        {time, result} = :timer.tc(fn ->
-          {:ok, :erlang.binary_to_term(File.read!("./data"))}
-        end)
-        IO.inspect("Loaded data file in #{inspect(time / 1000)} ms")
-        result
+      resolve fn root, _, _ ->
+        {:ok, root.data}
       end
     end
   end

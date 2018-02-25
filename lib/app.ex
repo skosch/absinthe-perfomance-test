@@ -19,10 +19,16 @@ defmodule App do
 
     IO.inspect("Loaded data file in #{inspect(time / 1000)} ms")
 
-    {time, _result} = :timer.tc(fn ->
+    {time, {:ok, result}} = :timer.tc(fn ->
       Absinthe.run(query_string, App.Schema, root_value: %{data: data})
     end)
-
     IO.inspect("Ran absinthe query in #{inspect(time / 1000)} ms")
+
+    {time, result} = :timer.tc(fn ->
+      Poison.encode!(result)
+    end)
+
+    IO.puts("Encoded in #{byte_size(result)} bytes in #{time / 1000}")
+
   end
 end
